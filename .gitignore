@@ -36,3 +36,5 @@ lerna-debug.log*
 
 # 文件历史记录
 /.history
+
+.env.local

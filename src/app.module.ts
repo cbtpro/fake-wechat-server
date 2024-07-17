@@ -1,3 +1,4 @@
+import { join } from 'node:path';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_GUARD } from '@nestjs/core';
@@ -17,7 +18,7 @@ import { JwtAuthGuard } from './auth/jwt.auth.guard';
     ConfigModule.forRoot({
       cache: true,
       isGlobal: true,
-      // envFilePath: ['.env', '.env.development.local', '.env.development'],
+      // envFilePath: join(__dirname, '../.env'),
     }),
     MockModule,
     UserModule,
@@ -25,13 +26,14 @@ import { JwtAuthGuard } from './auth/jwt.auth.guard';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
+        console.log('=====', configService.get('WECHAT_SECRET1'));
         return {
           type: 'mysql',
-          host: configService.get('DATABASE_HOST', 'localhost'), // 主机，默认为localhost
-          port: configService.get<number>('DATABASE_PORT', 3306), // 端口号
-          username: configService.get('DATABASE_USER', 'fake-wechat'), // 用户名
-          password: configService.get('DATABASE_PASSWORD', 'fake-wechat'), // 密码
-          database: configService.get('DATABASE_NAME', 'fake-wechat'), //数据库名
+          host: configService.get('DATABASE_HOST'), // 主机，默认为localhost
+          port: configService.get<number>('DATABASE_PORT'), // 端口号
+          username: configService.get('DATABASE_USER'), // 用户名
+          password: configService.get('DATABASE_PASSWORD'), // 密码
+          database: configService.get('DATABASE_NAME'), //数据库名
           entities: [User],
           synchronize: true,
         };

@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  nest-app:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    depends_on:
+      - mysql-container
+      - redis-container
+    ports:
+      - 3005:3000
+    networks:
+      - common-network
+
+  mysql-container:
+    image: mysql:latest
+    volumes:
+      - /Users/chenbitao/apps/docker-data/mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: fake-wechat
+      MYSQL_ALLOW_EMPTY_PASSWORD: ok
+      MYSQL_ROOT_PASSWORD: fake-wechat
+      # MYSQL_USER: root
+      MYSQL_PASSWORD: fake-wechat
+      MYSQL_ROOT_HOST: '%'
+    healthcheck:
+      test: mysqladmin ping -h mysql --user=$$MYSQL_USER --password=$$MYSQL_PASSWORD
+      interval: 30s
+      timeout: 12s
+      retries: 10
+    networks:
+      - common-network
+
+  redis-container:
+    image: redis
+    volumes:
+      - /Users/chenbitao/apps/docker-data/redis:/data
+    networks:
+      - common-network
+
+networks:
+  common-network:
+    driver: bridge
