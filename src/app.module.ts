@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigService, ConfigModule } from '@nestjs/config';
 import { WeChatModule } from 'nest-wechat';
+import { EncryptionService } from '@/services/encryption.service';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -26,7 +27,6 @@ import { JwtAuthGuard } from './auth/jwt.auth.guard';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        console.log('=====', configService.get('WECHAT_SECRET1'));
         return {
           type: 'mysql',
           host: configService.get('DATABASE_HOST'), // 主机，默认为localhost
@@ -40,10 +40,6 @@ import { JwtAuthGuard } from './auth/jwt.auth.guard';
       },
     }),
     AuthModule,
-    WeChatModule.register({
-      appId: 'your app id',
-      secret: 'your secret',
-    }),
     WeChatModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
@@ -56,6 +52,7 @@ import { JwtAuthGuard } from './auth/jwt.auth.guard';
   ],
   controllers: [AppController],
   providers: [
+    EncryptionService,
     AppService,
     /** 设置jwt验证为全局守卫 */
     {

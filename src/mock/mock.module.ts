@@ -14,8 +14,10 @@
 
 import { Module } from '@nestjs/common';
 import { MockController } from './mock.controller';
+import { EncryptionService } from '@/services/encryption.service';
 
 @Module({
   controllers: [MockController],
+  providers: [EncryptionService],
 })
 export class MockModule {}

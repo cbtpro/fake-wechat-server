@@ -1,5 +1,14 @@
-import { Controller, Get, Request, Post, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Body,
+  Get,
+  Request,
+  Post,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import EncryptionInterceptor from '@/interceptor/encryption.interceptor';
 import { AppService } from './app.service';
 // import { plainToClass } from 'class-transformer';
 // import { User } from './user/user.entity';
@@ -7,6 +16,7 @@ import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
 import { SkipAuth } from './auth/auth.decorator';
 
+@UseInterceptors(EncryptionInterceptor)
 @Controller()
 export class AppController {
   constructor(
@@ -21,18 +31,10 @@ export class AppController {
 
   @SkipAuth()
   // @UseGuards(LocalAuthGuard)
-  @UseGuards(AuthGuard('local'))
+  // @UseGuards(AuthGuard('local'))
   @Post('/auth/login')
-  async login(@Request() req) {
-    // return req.user;
-
-    // const responseBody: IResponseBody<User> = {
-    //   success: true,
-    //   message: '登录成功！',
-    //   data: plainToClass(User, req.user),
-    // };
-    // return responseBody;
-    const authInfo = await this.authService.login(req.user);
+  async login(@Body() user: IUser) {
+    const authInfo = await this.authService.login(user);
     const responseBody: IResponseBody<IAuthInfo> = {
       success: true,
       message: '成功！',

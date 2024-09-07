@@ -1,22 +1,35 @@
-import { Controller, Get, Query, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  UseInterceptors,
+} from '@nestjs/common';
 import type { Request } from 'express';
+import LoggingInterceptor from '@/interceptor/logging.interceptor';
+import EncryptionInterceptor from '@/interceptor/encryption.interceptor';
 import { tableList } from './mock-list';
 import { SkipAuth } from '../auth/auth.decorator';
 
+@UseInterceptors(LoggingInterceptor, EncryptionInterceptor)
 @Controller('/mock')
 export class MockController {
   // @SkipAuth()
-  @Get('/list')
+  @Post('/list')
   getList(
     @Req() request: Request,
-    @Query() params: PagingParams,
+    // @Query() params: PagingParams,
+    @Body() body: PagingParams,
   ): IResponseBodyByPaging<IMockUser> {
     const len = tableList.length;
     const [pageSize, page] = [
-      Number.parseInt(params.pageSize),
-      Number.parseInt(params.page),
+      // Number.parseInt(params.pageSize),
+      // Number.parseInt(params.page),
+      Number.parseInt(body.pageSize),
+      Number.parseInt(body.page),
     ];
-
     const totalPages = Math.ceil(len / pageSize);
 
     const currentPage = page < 0 ? 0 : page > totalPages ? totalPages : page;

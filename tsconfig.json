@@ -17,6 +17,10 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "typeRoots": ["/src/typings"]
+    // 如果明确指定了typeRoots ，那么忽略默认的 typeRoots
+    // "typeRoots": ["/src/typings"],
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
 }

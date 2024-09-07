@@ -12,13 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseInterceptors } from '@nestjs/common';
+import EncryptionInterceptor from '@/interceptor/encryption.interceptor';
 import { crypt } from '../utils/bcrypt';
 import { UserService } from './user.service';
 import { User } from './user.entity';
 import { ForbiddenException } from '../exception/forbidden.exception';
 import { SkipAuth } from '../auth/auth.decorator';
 
+@UseInterceptors(EncryptionInterceptor)
 @Controller('/user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
