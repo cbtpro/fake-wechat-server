@@ -41,8 +41,11 @@ export class AuthService {
   }
   async login(user: any) {
     const payload = { username: user.username, sub: user.userId };
+    const access_token = this.jwtService.sign(payload);
+    const decoded = this.jwtService.decode(access_token) as { exp: number };
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token,
+      expires_at: decoded.exp ? decoded.exp * 1000 : Date.now() + 7 * 24 * 60 * 60 * 1000,
     } as IAuthInfo;
   }
 }
