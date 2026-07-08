@@ -1,11 +1,12 @@
 import { Module, DynamicModule } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { CaptchaController } from './controllers/captcha.controller';
 import { CaptchaCacheService } from './services/captcha-cache.service';
 import { CAPTCHA_SERVICE_TOKEN } from './services/captcha.service.interface';
 import { CaptchaProdService } from './services/captcha-prod.service';
 import { CaptchaDevService } from './services/captcha-dev.service';
 import { EncryptionModule } from '../modules/encryption/encryption.module';
+import { createProfileProvider } from '../common/utils/profile.util';
 
 @Module({})
 export class CaptchaModule {
@@ -16,14 +17,10 @@ export class CaptchaModule {
       controllers: [CaptchaController],
       providers: [
         CaptchaCacheService,
-        {
+        createProfileProvider({
           provide: CAPTCHA_SERVICE_TOKEN,
-          useFactory: (configService: ConfigService) => {
-            const isDev = configService.get('NODE_ENV') === 'development';
-            return isDev ? new CaptchaDevService(configService) : new CaptchaProdService();
-          },
-          inject: [ConfigService],
-        },
+          useClasses: [CaptchaDevService, CaptchaProdService],
+        }),
       ],
       exports: [CAPTCHA_SERVICE_TOKEN, CaptchaCacheService],
     };

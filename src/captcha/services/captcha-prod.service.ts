@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CaptchaService } from './captcha.service.interface';
 import { generateCaptchaImage } from '../utils/captcha-image';
+import { Profile } from '../../common/decorators/profile.decorator';
 
+@Profile('production')
 @Injectable()
 export class CaptchaProdService implements CaptchaService {
   private readonly chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
