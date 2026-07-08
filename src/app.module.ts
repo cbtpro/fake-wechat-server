@@ -13,12 +13,14 @@ import { User } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { EncryptionModule } from './modules/encryption/encryption.module';
+import { CaptchaModule } from './captcha/captcha.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       cache: true,
       isGlobal: true,
+      envFilePath: `.env${process.env.NODE_ENV === 'development' ? '.dev' : ''}`,
     }),
     MockModule,
     UserModule,
@@ -40,6 +42,7 @@ import { EncryptionModule } from './modules/encryption/encryption.module';
     }),
     AuthModule,
     EncryptionModule,
+    CaptchaModule.forRoot(),
     WeChatModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {

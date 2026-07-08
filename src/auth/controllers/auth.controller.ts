@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, Body, UseInterceptors, Inject } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 import { SkipAuth } from '../../common/decorators/skip-auth.decorator';
 import { LoginDto } from '../dto/login.dto';
@@ -7,6 +7,7 @@ import EncryptionInterceptor from '../../interceptor/encryption.interceptor';
 import { crypt } from '../../common/utils/bcrypt';
 import { ForbiddenException } from '../../common/exceptions/forbidden.exception';
 import { UserService } from '../../user/user.service';
+import { CaptchaCacheService } from '../../captcha/services/captcha-cache.service';
 
 @UseInterceptors(EncryptionInterceptor)
 @Controller('auth')
@@ -14,11 +15,29 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
+    private readonly captchaCacheService: CaptchaCacheService,
   ) {}
+
+  private verifyCaptcha(captchaId: string, captcha: string): void {
+    const cacheKey = `${captchaId}_captcha`;
+    const storedCode = this.captchaCacheService.get(cacheKey);
+
+    if (!storedCode) {
+      throw new ForbiddenException('验证码已过期');
+    }
+
+    if (storedCode.toLowerCase() !== captcha.toLowerCase()) {
+      throw new ForbiddenException('验证码错误');
+    }
+
+    this.captchaCacheService.delete(cacheKey);
+  }
 
   @SkipAuth()
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
+    this.verifyCaptcha(loginDto.captchaId, loginDto.captcha);
+
     const user = await this.authService.validateUser(loginDto.username, loginDto.password);
     const authInfo = await this.authService.login(user);
     const responseBody: IResponseBody<IAuthInfo> = {
@@ -32,6 +51,8 @@ export class AuthController {
   @SkipAuth()
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
+    this.verifyCaptcha(registerDto.captchaId, registerDto.captcha);
+
     try {
       const password = await crypt(registerDto.password);
       const userData = Object.assign(registerDto, { password });

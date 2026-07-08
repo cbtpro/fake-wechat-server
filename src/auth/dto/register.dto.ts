@@ -3,4 +3,6 @@ export interface RegisterDto {
   nickname: string;
   password: string;
   avatar?: string;
+  captcha: string;
+  captchaId: string;
 }
