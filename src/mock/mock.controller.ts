@@ -11,7 +11,7 @@ import type { Request } from 'express';
 import LoggingInterceptor from '@/interceptor/logging.interceptor';
 import EncryptionInterceptor from '@/interceptor/encryption.interceptor';
 import { tableList } from './mock-list';
-import { SkipAuth } from '../auth/auth.decorator';
+import { SkipAuth } from '../common/decorators/skip-auth.decorator';
 
 @UseInterceptors(LoggingInterceptor, EncryptionInterceptor)
 @Controller('/mock')

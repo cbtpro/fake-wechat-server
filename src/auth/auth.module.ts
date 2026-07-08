@@ -6,10 +6,13 @@ import { UserModule } from '../user/user.module';
 import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
 import { JwtStrategy } from './jwt.strategy';
+import { AuthController } from './controllers/auth.controller';
+import { EncryptionModule } from '../modules/encryption/encryption.module';
 
 @Module({
   imports: [
     UserModule,
+    EncryptionModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: jwtConstants.secret,
@@ -17,6 +20,7 @@ import { JwtStrategy } from './jwt.strategy';
     }),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
+  controllers: [AuthController],
   exports: [AuthService],
 })
 export class AuthModule {}

@@ -15,8 +15,8 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { plainToClass } from 'class-transformer';
-import { User } from './user.entity';
-import { ForbiddenException } from '../exception/forbidden.exception';
+import { User } from './entities/user.entity';
+import { ForbiddenException } from '../common/exceptions/forbidden.exception';
 
 @Injectable()
 export class UserService {

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { comparePassword } from '../utils/bcrypt';
+import { comparePassword } from '../common/utils/bcrypt';
 import { plainToClass } from 'class-transformer';
-import { User } from '../user/user.entity';
-import { ForbiddenException } from '../exception/forbidden.exception';
+import { User } from '../user/entities/user.entity';
+import { ForbiddenException } from '../common/exceptions/forbidden.exception';
 
 @Injectable()
 export class AuthService {

@@ -20,7 +20,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { EncryptionService } from '@/services/encryption.service';
+import { EncryptionService } from '@/modules/encryption/encryption.service';
 
 @Injectable()
 export default class EncryptionInterceptor implements NestInterceptor {
