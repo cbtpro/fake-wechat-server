@@ -9,12 +9,14 @@ import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './controllers/auth.controller';
 import { EncryptionModule } from '../modules/encryption/encryption.module';
 import { CaptchaModule } from '../captcha/captcha.module';
+import { StorageModule } from '../modules/storage/storage.module';
 
 @Module({
   imports: [
     UserModule,
     EncryptionModule,
     CaptchaModule.forRoot(),
+    StorageModule.forRoot(),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: jwtConstants.secret,

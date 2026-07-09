@@ -14,6 +14,7 @@ import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { EncryptionModule } from './modules/encryption/encryption.module';
 import { CaptchaModule } from './captcha/captcha.module';
+import { StorageModule } from './modules/storage/storage.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { CaptchaModule } from './captcha/captcha.module';
     AuthModule,
     EncryptionModule,
     CaptchaModule.forRoot(),
+    StorageModule.forRoot(),
     WeChatModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {

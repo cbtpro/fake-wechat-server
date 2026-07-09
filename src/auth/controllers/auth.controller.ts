@@ -8,6 +8,10 @@ import { crypt } from '../../common/utils/bcrypt';
 import { ForbiddenException } from '../../common/exceptions/forbidden.exception';
 import { UserService } from '../../user/user.service';
 import { CaptchaCacheService } from '../../captcha/services/captcha-cache.service';
+import {
+  STORAGE_SERVICE_TOKEN,
+  StorageService,
+} from '../../modules/storage/storage.service.interface';
 
 @UseInterceptors(EncryptionInterceptor)
 @Controller('auth')
@@ -16,6 +20,8 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly userService: UserService,
     private readonly captchaCacheService: CaptchaCacheService,
+    @Inject(STORAGE_SERVICE_TOKEN)
+    private readonly storageService: StorageService,
   ) {}
 
   private verifyCaptcha(captchaId: string, captcha: string): void {
@@ -40,6 +46,9 @@ export class AuthController {
 
     const user = await this.authService.validateUser(loginDto.username, loginDto.password);
     const authInfo = await this.authService.login(user);
+    if (authInfo.user?.avatar) {
+      authInfo.user.avatar = this.storageService.getUrl(authInfo.user.avatar);
+    }
     const responseBody: IResponseBody<IAuthInfo> = {
       success: true,
       message: '登录成功！',

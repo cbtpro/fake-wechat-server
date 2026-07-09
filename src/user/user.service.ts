@@ -28,6 +28,64 @@ export class UserService {
     return 'Hello World!';
   }
 
+  async findByUsername(username: string): Promise<User | null> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    try {
+      const user = await queryRunner.manager
+        .createQueryBuilder(User, 'user')
+        .where('user.username = :username', { username })
+        .getOne();
+      return user ? plainToClass(User, user) : null;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async findById(id: number): Promise<User | null> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    try {
+      const user = await queryRunner.manager
+        .createQueryBuilder(User, 'user')
+        .where('user.id = :id', { id })
+        .getOne();
+      return user ? plainToClass(User, user) : null;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async updateAvatar(userId: number, avatar: string): Promise<User> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const user = await queryRunner.manager.findOne(User, {
+        where: { id: userId },
+      });
+      if (!user) {
+        throw new ForbiddenException('用户不存在');
+      }
+      user.avatar = avatar;
+      const updated = await queryRunner.manager.save(User, user);
+      await queryRunner.commitTransaction();
+      return plainToClass(User, updated);
+    } catch (error) {
+      console.error(error);
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
   /**
    * 判断用户名是否存在
    * @param username 用户名

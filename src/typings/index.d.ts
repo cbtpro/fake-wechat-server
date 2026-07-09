@@ -14,6 +14,13 @@
 
 interface IAuthInfo {
   access_token: string;
+  expires_at: number;
+  user: {
+    id: number;
+    username: string;
+    nickname: string;
+    avatar: string;
+  };
 }
 interface IResponseBody<T> {
   success: boolean;
