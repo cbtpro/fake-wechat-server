@@ -20,7 +20,7 @@ import {
 } from '../modules/storage/storage.service.interface';
 
 @UseInterceptors(EncryptionInterceptor)
-@Controller('user')
+@Controller('/user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
@@ -29,18 +29,18 @@ export class UserController {
   ) {}
 
   @SkipAuth()
-  @Get('test')
+  @Get('/test')
   getHello(): string {
     return this.userService.getHello();
   }
 
-  @Get('profile')
+  @Get('/profile')
   async getProfile(@Request() req: any) {
     const user = await this.userService.findById(req.user.userId);
     return this.transformUserAvatar(user);
   }
 
-  @Post('avatar')
+  @Post('/avatar')
   @UseInterceptors(FileInterceptor('file'))
   async uploadAvatar(
     @Request() req: any,

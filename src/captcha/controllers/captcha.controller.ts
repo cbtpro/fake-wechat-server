@@ -6,7 +6,7 @@ import { CaptchaCacheService } from '../services/captcha-cache.service';
 import { randomNatural } from '@/common/utils/random';
 
 @UseInterceptors(EncryptionInterceptor)
-@Controller('captcha')
+@Controller('/captcha')
 export class CaptchaController {
   constructor(
     @Inject(CAPTCHA_SERVICE_TOKEN) private readonly captchaService: CaptchaService,
@@ -14,7 +14,7 @@ export class CaptchaController {
   ) {}
 
   @SkipAuth()
-  @Get('image')
+  @Get('/image')
   async getCaptchaImage(): Promise<IResponseBody<{ captchaId: string; image: string }>> {
     const { code, image } = this.captchaService.generateCaptcha();
     const captchaId = Math.random().toString(36).substring(2, 34);
@@ -30,7 +30,7 @@ export class CaptchaController {
   }
 
   @SkipAuth()
-  @Post('verify')
+  @Post('/verify')
   async verifyCaptcha(
     @Body() body: { captchaId: string; code: string },
   ): Promise<IResponseBody<{ valid: boolean }>> {

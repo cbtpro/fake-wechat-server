@@ -14,7 +14,7 @@ import {
 } from '../../modules/storage/storage.service.interface';
 
 @UseInterceptors(EncryptionInterceptor)
-@Controller('auth')
+@Controller('/auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
@@ -40,7 +40,7 @@ export class AuthController {
   }
 
   @SkipAuth()
-  @Post('login')
+  @Post('/login')
   async login(@Body() loginDto: LoginDto) {
     this.verifyCaptcha(loginDto.captchaId, loginDto.captcha);
 
@@ -58,7 +58,7 @@ export class AuthController {
   }
 
   @SkipAuth()
-  @Post('register')
+  @Post('/register')
   async register(@Body() registerDto: RegisterDto) {
     this.verifyCaptcha(registerDto.captchaId, registerDto.captcha);
 

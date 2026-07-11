@@ -15,6 +15,10 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { EncryptionModule } from './modules/encryption/encryption.module';
 import { CaptchaModule } from './captcha/captcha.module';
 import { StorageModule } from './modules/storage/storage.module';
+import { AdminAuthModule } from './admin-auth/admin-auth.module';
+import { AdminUserModule } from './admin-user/admin-user.module';
+import { SplashModule } from './splash/splash.module';
+import { SplashConfig } from './splash/entities/splash-config.entity';
 
 @Module({
   imports: [
@@ -36,12 +40,15 @@ import { StorageModule } from './modules/storage/storage.module';
           username: configService.get('DATABASE_USER'),
           password: configService.get('DATABASE_PASSWORD'),
           database: configService.get('DATABASE_NAME'),
-          entities: [User],
+          entities: [User, SplashConfig],
           synchronize: true,
         };
       },
     }),
     AuthModule,
+    AdminAuthModule,
+    AdminUserModule,
+    SplashModule,
     EncryptionModule,
     CaptchaModule.forRoot(),
     StorageModule.forRoot(),
